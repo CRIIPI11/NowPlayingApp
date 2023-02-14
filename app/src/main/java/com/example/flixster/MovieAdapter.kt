@@ -8,10 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 
-/**
- * [RecyclerView.Adapter] that can display a [BestSellerBook] and makes a call to the
- * specified [OnListFragmentInteractionListener].
- */
 class MovieAdapter(
     private val movies: List<Movie>,
     private val mListener: OnListFragmentInteractionListener?
@@ -22,11 +18,6 @@ class MovieAdapter(
         val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment, parent, false)
         return MovieViewHolder(view)
     }
-
-    /**
-     * This inner class lets us refer to all the different View elements
-     * (Yes, the same ones as in the XML layout files!)
-     */
     inner class MovieViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         var aitem: Movie? = null
         val atitle: TextView = mView.findViewById<View>(R.id.title) as TextView
@@ -37,10 +28,6 @@ class MovieAdapter(
             return atitle.toString() + " '"
         }
     }
-
-    /**
-     * This lets us "bind" each Views in the ViewHolder to its' actual data!
-     */
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         val movie = movies[position]
 
@@ -53,17 +40,12 @@ class MovieAdapter(
             .centerInside()
             .into(holder.aposter)
 
-
         holder.mView.setOnClickListener {
             holder.aitem?.let { movie ->
                 mListener?.onItemClick(movie)
             }
         }
     }
-
-    /**
-     * Remember: RecyclerView adapters require a getItemCount() method.
-     */
     override fun getItemCount(): Int {
         return movies.size
     }

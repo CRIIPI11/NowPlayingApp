@@ -22,15 +22,8 @@ import java.io.StringReader
 
 private const val API_KEY = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
 
-/*
- * The class for the only fragment in the app, which contains the progress bar,
- * recyclerView, and performs the network calls to the NY Times API.
- */
 class MovieFragment : Fragment(), OnListFragmentInteractionListener {
 
-    /*
-     * Constructing the view
-     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,10 +38,6 @@ class MovieFragment : Fragment(), OnListFragmentInteractionListener {
         return view
     }
 
-    /*
-     * Updates the RecyclerView adapter with new data.  This is where the
-     * networking magic happens!
-     */
     private fun updateAdapter(progressBar: ContentLoadingProgressBar, recyclerView: RecyclerView) {
         progressBar.show()
 
@@ -59,58 +48,38 @@ class MovieFragment : Fragment(), OnListFragmentInteractionListener {
                 params,
                 object : JsonHttpResponseHandler()
                 {
-                    /*
-                     * The onSuccess function gets called when
-                     * HTTP response status is "200 OK"
-                     */
+
                     override fun onSuccess(
                         statusCode: Int,
                         headers: Headers,
                         json: JsonHttpResponseHandler.JSON
                     ) {
-                        // The wait for a response is over
+
                         progressBar.hide()
 
-                        //TODO - Parse JSON into Models
                         val resultsJSON : JSONArray = json.jsonObject.getJSONArray("results")
                         val movieJSON : StringReader = StringReader(resultsJSON.toString())
-
                         val gson = Gson()
-                        val arrayBookType = object : TypeToken<List<Movie>>() {}.type
-
                         val models : List<Movie> = gson.fromJson(movieJSON, Array<Movie>::class.java).toList() // Fix me!
                         recyclerView.adapter = MovieAdapter(models, this@MovieFragment)
 
-                        // Look for this in Logcat:
                         Log.d("MoviesFragment", "response successful")
                     }
 
-                    /*
-                     * The onFailure function gets called when
-                     * HTTP response status is "4XX" (eg. 401, 403, 404)
-                     */
                     override fun onFailure(
                         statusCode: Int,
                         headers: Headers?,
                         errorResponse: String,
                         t: Throwable?
                     ) {
-                        // The wait for a response is over
-                        progressBar.hide()
 
-                        // If the error is not null, log it!
+                        progressBar.hide()
                         t?.message?.let {
                             Log.e("MoviesFragment", errorResponse)
                         }
                     }
                 }]
-
-
     }
-
-    /*
-     * What happens when a particular book is clicked.
-     */
     override fun onItemClick(item: Movie) {
         Toast.makeText(context, "test: " + item.title, Toast.LENGTH_LONG).show()
     }
